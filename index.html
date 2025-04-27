@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MLB Hit Predictor</title>
+</head>
+<body style="background-color: #111827; color: white; font-family: Arial, sans-serif; padding: 2rem;">
+  <h1>🔥 MLB Hit Predictor</h1>
+
+  <input id="playerName" type="text" placeholder="Enter Player Name" style="padding: 0.5rem; width: 300px; margin-right: 1rem;">
+  <button onclick="getPrediction()" style="padding: 0.5rem;">Get Prediction</button>
+
+  <div id="result" style="margin-top: 2rem;"></div>
+
+  <script>
+    async function getPrediction() {
+      const player = document.getElementById('playerName').value;
+      const resultDiv = document.getElementById('result');
+
+      if (!player) {
+        resultDiv.innerHTML = "<p>Please enter a player name.</p>";
+        return;
+      }
+
+      resultDiv.innerHTML = "<p>Loading...</p>";
+
+      try {
+        const res = await fetch(`https://your-backend-url.onrender.com/predict_hit?player_name=${encodeURIComponent(player)}`);
+        const data = await res.json();
+
+        resultDiv.innerHTML = `
+          <h2>${data.player}</h2>
+          <p><strong>Recent Batting Average:</strong> ${data.recent_batting_average}</p>
+          <p><strong>Career vs Opponent:</strong> ${data.career_vs_opponent}</p>
+          <p><strong>Stadium Effect:</strong> ${data.stadium_effect}</p>
+          <p><strong>Projected Hit Chance:</strong> ${data.projected_hit_chance}</p>
+        `;
+      } catch (error) {
+        resultDiv.innerHTML = "<p>Error fetching data. Check backend is running.</p>";
+      }
+    }
+  </script>
+</body>
+</html>

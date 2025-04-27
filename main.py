@@ -15,7 +15,6 @@ app.add_middleware(
 
 @app.get("/predict_hit")
 async def predict_hit(player_name: str):
-    # Fake prediction logic
     recent_batting_avg = round(random.uniform(0.200, 0.400), 3)
     career_vs_opponent = f"{random.randint(3, 10)} for {random.randint(10, 20)} ({round(random.uniform(0.250, 0.500), 3)})"
     stadium_effect = random.choice(["Hitter friendly", "Neutral", "Pitcher friendly"])

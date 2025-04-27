@@ -33,7 +33,8 @@
         resultDiv.innerHTML = `
           <h2>${data.player}</h2>
           <p><strong>Recent Batting Average:</strong> ${data.recent_batting_average}</p>
-          <p><strong>Career Vs Opponent:</strong> ${data.career_vs_opponent}</p>
+          <p><strong>Games Played:</strong> ${data.games_played}</p>
+          <p><strong>Last 5 Games:</strong> ${data.last_5_games ? data.last_5_games.join(", ") : "N/A"}</p>
           <p><strong>Stadium Effect:</strong> ${data.stadium_effect}</p>
           <p><strong>Projected Hit Chance:</strong> ${data.projected_hit_chance}</p>
         `;

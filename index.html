@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MLB Hit Predictor</title>
+  <title>🔥 MLB Hit Predictor</title>
 </head>
-
 <body style="background-color: #111827; color: white; font-family: Arial, sans-serif; padding: 2rem;">
+
   <h1>🔥 MLB Hit Predictor</h1>
 
   <input id="playerName" type="text" placeholder="Enter Player Name" style="padding: 0.5rem; width: 300px; margin-right: 1rem;">
@@ -16,10 +16,10 @@
 
   <script>
     async function getPrediction() {
-      const player = document.getElementById('playerName').value;
+      const playerName = document.getElementById('playerName').value;
       const resultDiv = document.getElementById('result');
 
-      if (!player) {
+      if (!playerName) {
         resultDiv.innerHTML = "<p>Please enter a player name.</p>";
         return;
       }
@@ -27,16 +27,35 @@
       resultDiv.innerHTML = "<p>Loading...</p>";
 
       try {
-        const res = await fetch(`https://sports-pick-backend.onrender.com/predict_hit?player_name=${encodeURIComponent(player)}`);
+        const res = await fetch(`https://sports-pick-backend.onrender.com/predict_hit?player_name=${encodeURIComponent(playerName)}`);
         const data = await res.json();
+
+        if (data.error) {
+          resultDiv.innerHTML = `<p>Error: ${data.error}</p>`;
+          return;
+        }
+
+        let recentGamesHTML = "";
+        if (data.recent_games && data.recent_games.length > 0) {
+          recentGamesHTML = data.recent_games.map(game => `<li>${game}</li>`).join("");
+        } else {
+          recentGamesHTML = "<li>No recent games</li>";
+        }
 
         resultDiv.innerHTML = `
           <h2>${data.player}</h2>
-          <p><strong>Recent Batting Average:</strong> ${data.recent_batting_average}</p>
-          <p><strong>Games Played:</strong> ${data.games_played}</p>
-          <p><strong>Last 5 Games:</strong> ${data.last_5_games ? data.last_5_games.join(", ") : "N/A"}</p>
-          <p><strong>Stadium Effect:</strong> ${data.stadium_effect}</p>
-          <p><strong>Projected Hit Chance:</strong> ${data.projected_hit_chance}</p>
+
+          <p><strong>Recent Batting Average:</strong> ${data.season_batting_average ?? 'N/A'}</p>
+
+          <p><strong>Last 5 Games:</strong></p>
+          <ul>${recentGamesHTML}</ul>
+
+          <p><strong>Split vs Left-Handed Pitchers:</strong> ${data.split_vs_left ?? 'N/A'}</p>
+          <p><strong>Split vs Right-Handed Pitchers:</strong> ${data.split_vs_right ?? 'N/A'}</p>
+
+          <p><strong>Today's Opposing Pitcher:</strong> ${data.opposing_pitcher ?? 'N/A'} (${data.pitcher_hand ?? 'N/A'}-Handed, ERA: ${data.pitcher_era ?? 'N/A'})</p>
+
+          <p><strong>Projected Hit Chance Today:</strong> ${data.projected_hit_chance_today ?? 'N/A'}</p>
         `;
       } catch (error) {
         console.error(error);
